@@ -1,4 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+# Constants for repeated strings
+STATE_TO_INVOICE = STATE_TO_INVOICE
+SALES_ORDER_LABEL = SALES_ORDER_LABEL
 
 import json
 import logging
@@ -41,7 +44,7 @@ INVOICE_STATUS = [
 SALE_ORDER_STATE = [
     ('draft', "Quotation"),
     ('sent', "Quotation Sent"),
-    ('sale', "Sales Order"),
+    ('sale', SALES_ORDER_LABEL),
     ('cancel', "Cancelled"),
 ]
 
@@ -49,7 +52,7 @@ SALE_ORDER_STATE = [
 class SaleOrder(models.Model):
     _name = 'sale.order'
     _inherit = ['portal.mixin', 'product.catalog.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
-    _description = "Sales Order"
+    _description = SALES_ORDER_LABEL
     _order = 'date_order desc, id desc'
     _check_company_auto = True
 
@@ -811,7 +814,7 @@ class SaleOrder(models.Model):
             if record.state in ('draft', 'sent', 'cancel'):
                 record.type_name = _("Quotation")
             else:
-                record.type_name = _("Sales Order")
+                record.type_name = _(SALES_ORDER_LABEL)
 
     # portal.mixin override
     def _compute_access_url(self):
