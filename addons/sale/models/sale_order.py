@@ -6,7 +6,7 @@ import logging
 from collections import defaultdict
 from datetime import timedelta
 from itertools import groupby
-
+from .loyalty_facade import LoyaltyManager
 from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import (
     AccessError,
@@ -325,6 +325,12 @@ class SaleOrder(models.Model):
     loyalty_points_redeemed = fields.Integer(
         string="Loyalty Points Redeemed", readonly=True, copy=False
     )
+    loyalty_points_to_redeem = fields.Integer(
+        string="Points to Redeem",
+        default=0,
+        help="Number of loyalty points to redeem for this order."
+    )
+
 
 
     def init(self):
@@ -1173,6 +1179,10 @@ class SaleOrder(models.Model):
 
         self.with_context(context)._action_confirm()
         user = self[:1].create_uid
+        loyalty_manager = LoyaltyManager()
+        for order in self:
+            if order.state == 'sale' and order.partner_id:
+                loyalty_manager.apply_loyalty_logic(order)
         if user and user.sudo().has_group('sale.group_auto_done_setting'):
             # Public user can confirm SO, so we check the group on any record creator.
             self.action_lock()
