@@ -317,6 +317,15 @@ class SaleOrder(models.Model):
         compute='_compute_has_active_pricelist')
     show_update_pricelist = fields.Boolean(
         string="Has Pricelist Changed", store=False)  # True if the pricelist was changed
+    
+    #Loyalty points addition
+    loyalty_points_earned = fields.Integer(
+        string="Loyalty Points Earned", readonly=True, copy=False
+    )
+    loyalty_points_redeemed = fields.Integer(
+        string="Loyalty Points Redeemed", readonly=True, copy=False
+    )
+
 
     def init(self):
         create_index(self._cr, 'sale_order_date_order_id_idx', 'sale_order', ["date_order desc", "id desc"])

@@ -14,6 +14,9 @@ class ResPartner(models.Model):
         compute='_compute_sale_order_count',
     )
     sale_order_ids = fields.One2many('sale.order', 'partner_id', 'Sales Order')
+    loyalty_points = fields.Integer(
+        string="Loyalty Points", default=0, help="Points accumulated from past purchases."
+    )
     sale_warn = fields.Selection(WARNING_MESSAGE, 'Sales Warnings', default='no-message', help=WARNING_HELP)
     sale_warn_msg = fields.Text('Message for Sales Order')
 
