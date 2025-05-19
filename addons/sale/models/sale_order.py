@@ -14,6 +14,7 @@ from odoo.exceptions import (
     UserError,
     ValidationError,
 )
+from . import loyalty_service  
 from odoo.fields import Command
 from odoo.http import request
 from odoo.osv import expression
@@ -1163,6 +1164,13 @@ class SaleOrder(models.Model):
         context.pop('default_name', None)
 
         self.with_context(context)._action_confirm()
+
+        # Loyalty Logic Injection (Facade Pattern)
+        loyalty_service = self.env['sale.loyalty.service']
+        for order in self:
+            loyalty_service.redeem_loyalty_points(order)
+            loyalty_service.award_loyalty_points(order)
+
         user = self[:1].create_uid
         if user and user.sudo().has_group('sale.group_auto_done_setting'):
             # Public user can confirm SO, so we check the group on any record creator.
@@ -1172,6 +1180,7 @@ class SaleOrder(models.Model):
             self._send_order_confirmation_mail()
 
         return True
+
 
     def _should_be_locked(self):
         self.ensure_one()

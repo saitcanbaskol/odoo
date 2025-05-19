@@ -63,6 +63,9 @@ This module contains all the common features of Sales Management and eCommerce.
         'data/product_demo.xml',
         'data/sale_demo.xml',
     ],
+    'test': [
+        'tests/test_loyalty_points.py',
+    ],
     'installable': True,
     'assets': {
         'web.assets_backend': [
