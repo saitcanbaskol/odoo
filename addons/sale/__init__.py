@@ -5,7 +5,7 @@ from . import models
 from . import controllers
 from . import report
 from . import wizard
-from . import test_loyalty_service
+
 
 
 def _post_init_hook(env):

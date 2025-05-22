@@ -1166,10 +1166,13 @@ class SaleOrder(models.Model):
         self.with_context(context)._action_confirm()
 
         # Loyalty Logic Injection (Facade Pattern)
+                # Loyalty Logic Injection (Facade Pattern)
         loyalty_service = self.env['sale.loyalty.service']
         for order in self:
-            loyalty_service.redeem_loyalty_points(order)
-            loyalty_service.award_loyalty_points(order)
+            loyalty_service.redeem_loyalty_points(order)  # Apply discount line
+            order._compute_amounts()  # Correct recomputation method
+            loyalty_service.award_loyalty_points(order)   # Award points after discount
+
 
         user = self[:1].create_uid
         if user and user.sudo().has_group('sale.group_auto_done_setting'):
